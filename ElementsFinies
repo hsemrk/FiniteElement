@@ -28,7 +28,7 @@ function Ke = Kele(x1,x2)
   he= x2 - x1; %longeur de l'element 
   n=1000; %nombre de valeurs des fonctions (precision) 
   x=0:he/n:he; % x bar
-  %calculer les dérivées secondes des fonctions de forme d'Hermite P3
+  %calculer les dÃ©rivÃ©es secondes des fonctions de forme d'Hermite P3
   for i=1:n+1
     psi_sec(1,i)=-6/(he*he)+12*x(i)/(he*he*he);
     psi_sec(2,i)=-4/he+6*x(i)/(he*he);
@@ -37,11 +37,11 @@ function Ke = Kele(x1,x2)
   end
   E=Ee(x1,x2,n); %obtenir les valeurs de E
   Igz=Igze(x1,x2,n); %obtenir les valeurs de Igz
-  %calculer les élements de la matrice Ke
+  %calculer les Ã©lements de la matrice Ke
   for i=1:4
     for j=i:4
       Ke(i,j)=trapz(x, E.*Igz.*psi_sec(i,:).*psi_sec(j,:));
-      %utiliser le faite que Ke est symetrique pour reduire le nbr d'itérations 
+      %utiliser le faite que Ke est symetrique pour reduire le nbr d'itÃ©rations 
       Ke(j,i)=Ke(i,j); 
     end
   end
@@ -59,13 +59,13 @@ function Fe = Fele(x1,x2)
     psi(4,i)=-x(i).*x(i)./he+x(i).*x(i).*x(i)./(he*he);
   end
   q=qe(x1,x2,n); %obtenir les valeurs de q
-  %calculer les élements du vecteur Fe
+  %calculer les Ã©lements du vecteur Fe
   for i=1:4
     Fe(i,1)=trapz(x,q.*psi(i,:));
   end
 endfunction
 
-function K = assK(maill) %Assemblage de la matrice de rigidité
+function K = assK(maill) %Assemblage de la matrice de rigiditÃ©
   nh=length(maill)-1; %nbt d'elements
   K=zeros(2*nh+2,2*nh+2);
   for i=1:nh 
@@ -81,10 +81,10 @@ function F = assF(maill) %Assemblage du vecteur force
   end
 endfunction
 
-%---Résolution----%
+%---RÃ©solution----%
 n=10; %nbr d'elements finis
 L=1; %longeur de la poutre
-f0= 60000; %force appliquée à l'extremité de la poutre
+f0= 60000; %force appliquÃ©e Ã  l'extremitÃ© de la poutre
 %preparation des vecteur U et Q et application des condition au limites
 U=zeros(2*n+2,1);
 Q=zeros(2*n+2,1);
@@ -97,25 +97,25 @@ else
   j=1:n+1;
   m= L/2 * (1 - cos(pi*(j-1)/n)); % maillage 2
 endif
-%préparation de la matrice de rigidité et du vecteur force
+%prÃ©paration de la matrice de rigiditÃ© et du vecteur force
 K=assK(m);
 F=assF(m);
 %resolution du systeme [K]*U=F+Q
 U(3:2*n+2,1)=K(3:2*n+2,3:2*n+2)\(F(3:2*n+2,1)+Q(3:2*n+2,1));
 Q(1:2)=K(1:2,1:4)*U(1:4)-F(1:2);
-%Regroupement de la déformée
+%Regroupement de la dÃ©formÃ©e
 for i=1:n+1
   Vef(i)=U(2*i-1);
 end
 for i=1:n+1
   Van(i)=f0*m(i)^2 * (3*L-m(i)) /(6*200e9*29e-6) + 2400* L^4 * (20*m(i)^2/L^2-10*m(i)^3/L^3+m(i)^5/L^5)/(120*200e9*29e-6);
 end
-%traçage
+%traÃ§age
 figure (1);
 plot(m,Vef,'x',m,Van,'r')
-title ("Déformé de la poutre");
+title ("DÃ©formÃ© de la poutre");
 xlabel("x(m)");ylabel("v(x)[m]");
-legend ("élements finis", "Solution analytique","location","west");
+legend ("Ã©lements finis", "Solution analytique","location","west");
 %construction du vecteur Qe des variables secondaires
 Qe=zeros(4*n,1);
 Qe(1:2)=Q(1:2);
@@ -132,12 +132,12 @@ end
 for i=1:n+1
   Tan(i)=f0+2400*(1-m(i)^2/L^2)/2;
 end
-%traçage
+%traÃ§age
 figure (2);
 plot(m,Tef,'x',m,Tan,'r')
 title ("Effort tranchant");
 xlabel("x(m)");ylabel("Ty(x)[N]");
-legend ("élements finis", "Solution analytique","location","west");
+legend ("Ã©lements finis", "Solution analytique","location","west");
 %Regroupement des moments
 Mef(1)=-Qe(2);
 for i=2:n+1
@@ -147,9 +147,9 @@ end
 for i=1:n+1
   Man(i)=f0*(L-m(i))+2400*L^2*(2-3*m(i)/L+m(i)^3/L^3)/6;
 end
-%traçage
+%traÃ§age
 figure (3);
 plot(m,Mef,'x',m,Man,'r')
-title ("Moment fléchissant");
+title ("Moment flÃ©chissant");
 xlabel("x(m)");ylabel("Mfz(x)[N.m]");
-legend ("élements finis", "Solution analytique","location","west");
+legend ("Ã©lements finis", "Solution analytique","location","west");
